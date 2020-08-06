@@ -49,7 +49,7 @@ pubchem_to_kegg_child<-function(cids){
 
 		if(length(d1[[1]]$Information[[j]])>1){
 
-		return(cbind(d1[[1]]$Information[[j]]$CID[1],d1[[1]]$Information[[j]]$SID[1]))
+		return(cbind(d1[[1]]$Information[[j]]$CID[1],d1[[1]]$Information[[j]]$SID))
 		}
 	})
 
