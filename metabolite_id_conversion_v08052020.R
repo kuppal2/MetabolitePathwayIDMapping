@@ -20,7 +20,7 @@ pubchem_to_kegg<-function(cids){
             res<-unique(res)
             return(res)
 			})
-        save(res_temp,file="res_temp.Rda")
+        
 		res_final<-ldply(res_temp,rbind)
 	}else{
 	
@@ -49,7 +49,6 @@ pubchem_to_kegg_child<-function(cids){
 
 	sid_list<-lapply(1:length(d1[[1]]$Information),function(j){
         
-        print(j)
 
 		if(length(d1[[1]]$Information[[j]])>1){
             Sys.sleep(0.1)
@@ -67,7 +66,7 @@ pubchem_to_kegg_child<-function(cids){
                      resmat<-as.data.frame(cbind(names(kegg_ids),kegg_ids))
                            resmat<-unique(resmat)
                            if(length(kegg_ids)>0){
-                               resmat$V1<-(paste(sids,collapse=";"))
+                               resmat$V1<-(paste(d1[[1]]$Information[[j]]$SID,collapse=";"))
                                
                                colnames(resmat)<-c("pubchem_sid","KEGGID")
                                resmat$pubchem_sid<-gsub(resmat$pubchem_sid,pattern="pubchem:",replacement="")
@@ -79,7 +78,7 @@ pubchem_to_kegg_child<-function(cids){
                                colnames(res_final)<-c("pubchem_cid","pubchem_sid","KEGGID")
                            }else{
                                
-                                   res_final<-cbind(d1[[1]]$Information[[j]]$CID,(paste(sids,collapse=";")),NA)
+                                   res_final<-cbind(d1[[1]]$Information[[j]]$CID,(paste(d1[[1]]$Information[[j]]$SID,collapse=";")),NA)
                                    colnames(res_final)<-c("pubchem_cid","pubchem_sid","KEGGID")
                            }
             }else{
@@ -94,17 +93,16 @@ pubchem_to_kegg_child<-function(cids){
                 
                 res_final<-cbind(d1[[1]]$Information[[j]]$CID,resmat)
                 colnames(res_final)<-c("pubchem_cid","pubchem_sid","KEGGID")
-                #merge(sid_list,resmat,by.x="pubchem_sid",by.y="pubchem_sid",all=TRUE)
+                
                 
                 
             }
-            #return(cbind(d1[[1]]$Information[[j]]$CID[1],d1[[1]]$Information[[j]]$SID))
+            
             res_final<-as.data.frame(res_final)
             return(res_final)
 		}
 	})
-    
-    save(sid_list,file="sid_list.Rda")
+
 
     res_final<-ldply(sid_list,rbind)
     colnames(res_final)<-c("pubchem_cid","pubchem_sid","KEGGID")
